@@ -29,9 +29,9 @@ namespace Lab2_SAiMMod
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.comboBoxTypes = new System.Windows.Forms.ComboBox();
             this.buttonStart = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -51,6 +51,12 @@ namespace Lab2_SAiMMod
             this.panel2 = new System.Windows.Forms.Panel();
             this.label5 = new System.Windows.Forms.Label();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.textBoxExpValue = new System.Windows.Forms.TextBox();
+            this.textBoxDisp = new System.Windows.Forms.TextBox();
+            this.textBoxDeviation = new System.Windows.Forms.TextBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
@@ -203,6 +209,12 @@ namespace Lab2_SAiMMod
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.label8);
+            this.panel2.Controls.Add(this.label7);
+            this.panel2.Controls.Add(this.label6);
+            this.panel2.Controls.Add(this.textBoxDeviation);
+            this.panel2.Controls.Add(this.textBoxDisp);
+            this.panel2.Controls.Add(this.textBoxExpValue);
             this.panel2.Controls.Add(this.label5);
             this.panel2.Location = new System.Drawing.Point(12, 294);
             this.panel2.Name = "panel2";
@@ -220,19 +232,70 @@ namespace Lab2_SAiMMod
             // 
             // chart1
             // 
-            chartArea2.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea2);
-            legend2.Name = "Legend1";
-            this.chart1.Legends.Add(legend2);
+            chartArea1.Name = "ChartArea1";
+            this.chart1.ChartAreas.Add(chartArea1);
+            legend1.Name = "Legend1";
+            this.chart1.Legends.Add(legend1);
             this.chart1.Location = new System.Drawing.Point(251, 42);
             this.chart1.Name = "chart1";
-            series2.ChartArea = "ChartArea1";
-            series2.Legend = "Legend1";
-            series2.Name = "Series1";
-            this.chart1.Series.Add(series2);
+            series1.ChartArea = "ChartArea1";
+            series1.Legend = "Legend1";
+            series1.Name = "Series1";
+            this.chart1.Series.Add(series1);
             this.chart1.Size = new System.Drawing.Size(1218, 475);
             this.chart1.TabIndex = 4;
             this.chart1.Text = "f1";
+            // 
+            // textBoxExpValue
+            // 
+            this.textBoxExpValue.Location = new System.Drawing.Point(6, 61);
+            this.textBoxExpValue.Name = "textBoxExpValue";
+            this.textBoxExpValue.ReadOnly = true;
+            this.textBoxExpValue.Size = new System.Drawing.Size(100, 22);
+            this.textBoxExpValue.TabIndex = 1;
+            // 
+            // textBoxDisp
+            // 
+            this.textBoxDisp.Location = new System.Drawing.Point(6, 113);
+            this.textBoxDisp.Name = "textBoxDisp";
+            this.textBoxDisp.ReadOnly = true;
+            this.textBoxDisp.Size = new System.Drawing.Size(100, 22);
+            this.textBoxDisp.TabIndex = 2;
+            // 
+            // textBoxDeviation
+            // 
+            this.textBoxDeviation.Location = new System.Drawing.Point(3, 170);
+            this.textBoxDeviation.Name = "textBoxDeviation";
+            this.textBoxDeviation.ReadOnly = true;
+            this.textBoxDeviation.Size = new System.Drawing.Size(100, 22);
+            this.textBoxDeviation.TabIndex = 3;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(3, 41);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(103, 17);
+            this.label6.TabIndex = 4;
+            this.label6.Text = "Мат.ожидание";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(3, 93);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(81, 17);
+            this.label7.TabIndex = 5;
+            this.label7.Text = "Дисперсия";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(3, 150);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(192, 17);
+            this.label8.TabIndex = 6;
+            this.label8.Text = "Среднеквадрат.отклонение";
             // 
             // Form1
             // 
@@ -276,6 +339,12 @@ namespace Lab2_SAiMMod
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.TextBox textBoxDeviation;
+        private System.Windows.Forms.TextBox textBoxDisp;
+        private System.Windows.Forms.TextBox textBoxExpValue;
     }
 }
 
