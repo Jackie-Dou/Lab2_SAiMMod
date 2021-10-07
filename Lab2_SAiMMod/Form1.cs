@@ -42,19 +42,33 @@ namespace Lab2_SAiMMod
             comboBoxTypes.Items.Add(SIMPSON_STR);
         }
 
-        private void GetLemer(int a, int R0, int m)
+        private void comboBoxTypes_SelectedValueChanged(object sender, EventArgs e)
         {
-            double R = R0;
-            for (int i = 0; i < SIZE; i++)
+            switch (comboBoxTypes.Text)
             {
-                double temp1 = (a * R) % m;
-                double temp2 = temp1 / m;
-                numbersR.Add(temp2);
-                R = temp1;
+                case EVEN_STR:
+                    labelChange1.Text = "N"; textBoxChange1.Text = "0";
+                    labelChange2.Text = "a"; textBoxChange2.Text = "0";
+                    labelChange3.Text = "b"; textBoxChange3.Text = "0";
+                    break;
+                case GAUSS_STR:
+                    labelChange1.Text = "N"; textBoxChange1.Text = "0";
+                    labelChange2.Text = "m"; textBoxChange2.Text = "0";
+                    labelChange3.Text = "σ"; textBoxChange3.Text = "0";
+                    break;
+                case EXP_STR:
+                    labelChange1.Text = "N"; textBoxChange1.Text = "0";
+                    labelChange2.Text = "λ"; textBoxChange1.Text = "0";
+                    labelChange3.Text = " "; textBoxChange1.Text = "no input";
+                    break;
+                case GAMMA_STR:
+                    break;
+                case TRIANG_STR:
+                    break;
+                case SIMPSON_STR:
+                    break;
             }
         }
-
-
 
         private void buttonStart_Click(object sender, EventArgs e)
         {
@@ -91,10 +105,12 @@ namespace Lab2_SAiMMod
                    // DrawEvaluationDiagram(numbersX, 5000, 10000, 0.06);
                     break;
                 case GAUSS_STR:
-                    //numbersX = GaussDistribution();
+                    numbersX = GaussDistribution(Convert.ToInt32(textBoxChange1.Text), Convert.ToDouble(textBoxChange2.Text), Convert.ToDouble(textBoxChange3.Text));
+                    numbersX.Sort();
                     break;
                 case EXP_STR:
-                    //ExponentialDistribution();
+                    numbersX = ExponentialDistribution(Convert.ToInt32(textBoxChange1.Text), Convert.ToDouble(textBoxChange2.Text));
+                    numbersX.Sort();
                     break;
                 case GAMMA_STR:
                     break;
@@ -104,12 +120,24 @@ namespace Lab2_SAiMMod
                     break;
             }
         }
+        private void GetLemer(int a, int R0, int m)
+        {
+            double R = R0;
+            for (int i = 0; i < SIZE; i++)
+            {
+                double temp1 = (a * R) % m;
+                double temp2 = temp1 / m;
+                numbersR.Add(temp2);
+                R = temp1;
+            }
+        }
 
-        private static List<double> EvenDistribution(int N = 130000, double a = 5000, double b = 10000)
+        private static List<double> EvenDistribution(int N, double a, double b)
         {
             if (N == 0) N = 130000;
             if (a == 0) a = 5000;
             if (b == 0) b = 10000;
+
             var result = new List<double>();
 
             for (int i = 0; i < N; i++)
@@ -118,27 +146,39 @@ namespace Lab2_SAiMMod
             return result;
         }
 
-        private void comboBoxTypes_SelectedValueChanged(object sender, EventArgs e)
+        private static List<double> GaussDistribution(int N, double m, double sig)
         {
-            switch (comboBoxTypes.Text)
+            if (N == 0) N = 130000;
+            if (m == 0) m = 500;
+            if (sig == 0) sig = 100;
+
+            var result = new List<double>();
+
+            double n = 6;
+            for (int i = 0; i < N; i++)
             {
-                case EVEN_STR:
-                    labelChange1.Text = "N"; textBoxChange1.Text = "0";
-                    labelChange2.Text = "a"; textBoxChange2.Text = "0";
-                    labelChange3.Text = "b"; textBoxChange3.Text = "0";
-                    break;
-                case GAUSS_STR:
-                    break;
-                case EXP_STR:
-                    break;
-                case GAMMA_STR:
-                    break;
-                case TRIANG_STR:
-                    break;
-                case SIMPSON_STR:
-                    break;
+                double sum = 0;
+                for (int j = 0; j < n; j++)
+                    sum += numbersR.ElementAt((i + j) % N);
+
+                result.Insert(i, m + sig * Math.Sqrt(12.0 / n) * (sum - (double)n / 2));
             }
+
+            return result;
         }
+
+        private static List<double> ExponentialDistribution(int N, double l)
+        {
+            if (N == 0) N = 130000;
+            if (l == 0) l = 100;
+
+            var result = new List<double>();
+            for (int i = 0; i < N; i++)
+                result.Insert(i, -Math.Log(numbersR.ElementAt(i)) / l);
+            return result;
+        }
+
+
 
         /*        private void DrawEvaluationDiagram(List<double> xValues, double? minX = null, double? maxX = null, double? maxY = null)
                 {
