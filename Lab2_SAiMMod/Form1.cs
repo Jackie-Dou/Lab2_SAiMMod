@@ -21,7 +21,12 @@ namespace Lab2_SAiMMod
         private const string TRIANG_STR = "Треугольное распределение";
         private const string SIMPSON_STR = "Распределение Симпсона";
 
-
+        struct GistogramInfo
+        {
+            public int numOfValue { get; set; }
+            public double startOfSegment { get; set; }
+            public double endOfSegment { get; set; }
+        }
         /*
                 const double xMin = 0;
                 const double xMax = 1;
@@ -119,6 +124,12 @@ namespace Lab2_SAiMMod
                 case SIMPSON_STR:
                     break;
             }
+            List<GistogramInfo> gistData = new List<GistogramInfo>();
+            gistData = GetGistogramInfo(numbersX);
+            gistData.ForEach(delegate (GistogramInfo info)
+            {
+                chart1.Series[0].Points.AddXY(Math.Round(info.startOfSegment, 4), info.numOfValue);
+            });
         }
         private void GetLemer(int a, int R0, int m)
         {
@@ -178,45 +189,29 @@ namespace Lab2_SAiMMod
             return result;
         }
 
-
-
-        /*        private void DrawEvaluationDiagram(List<double> xValues, double? minX = null, double? maxX = null, double? maxY = null)
+        private List<GistogramInfo> GetGistogramInfo(List<double> numbers)
+        {
+            double maxValue = numbers.Max();
+            double minValue = numbers.Min();
+            double step = (double)(maxValue - minValue) / (double)NUM_STEPS;
+            List<GistogramInfo> result = new List<GistogramInfo>();
+            double temp = minValue;
+            int num = numbers.FindAll(x => (x == minValue)).Count;
+            while (temp < maxValue)
+            {
+                num += numbers.FindAll(x => (x <= temp + step && x > temp)).Count;
+                GistogramInfo info = new GistogramInfo
                 {
-                    xValues.Sort();
-
-                    chart1.Series["Ci"].Points.Clear();
-                    chart1.Series["Xi"].Points.Clear();
-
-                    int[] countInIntervals = new int[NUM_STEPS + 1];
-                    int intervalNumber;
-                    int max = 0;
-
-                    double delta = (xValues.Last() - xValues.First()) / NUM_STEPS;
-
-                    foreach (double x in xValues)
-                    {
-                        intervalNumber = (int)Math.Truncate((x - xValues.First()) / delta) % 20;
-                        countInIntervals[intervalNumber]++;
-                    }
-
-                    foreach (int i in countInIntervals)
-                    {
-                        if (i > max)
-                        {
-                            max = i;
-                        }
-                    }
-
-                    chart1.ChartAreas[0].AxisY.Maximum = (maxY != null) ? maxY.Value : (1.5 * ((double)max / xValues.Count));
-                    chart1.ChartAreas[0].AxisY.Minimum = yMin;
-                    chart1.ChartAreas[0].AxisX.Maximum = (maxX != null) ? maxX.Value : xValues.Last();
-                    chart1.ChartAreas[0].AxisX.Minimum = (minX != null) ? minX.Value : xValues.First();
-
-                    for (int i = 0; i < countInIntervals.Length; i++)
-                    {
-                        chart1.Series["Ci"].Points.AddXY(xValues.First() + i * delta + delta / 2, (double)countInIntervals[i] / xValues.Count);
-                        Console.WriteLine((double)countInIntervals[i] / xValues.Count);
-                    }
-                }*/
+                    numOfValue = num,
+                    startOfSegment = temp,
+                    endOfSegment = temp + step
+                };
+                result.Add(info);
+                num = 0;
+                temp += step;
+                temp = Math.Round(temp, 5);
+            }
+            return result;
+        }
     }
 }
