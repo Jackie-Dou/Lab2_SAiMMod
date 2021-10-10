@@ -63,14 +63,23 @@ namespace Lab2_SAiMMod
                     break;
                 case EXP_STR:
                     labelChange1.Text = "N"; textBoxChange1.Text = "0";
-                    labelChange2.Text = "λ"; textBoxChange1.Text = "0";
-                    labelChange3.Text = " "; textBoxChange1.Text = "no input";
+                    labelChange2.Text = "λ"; textBoxChange2.Text = "0";
+                    labelChange3.Text = " "; textBoxChange3.Text = "no input";
                     break;
                 case GAMMA_STR:
+                    labelChange1.Text = "N = "; textBoxChange1.Text = "0";
+                    labelChange2.Text = "η = "; textBoxChange1.Text = "0";
+                    labelChange3.Text = "λ = "; textBoxChange1.Text = "0";
                     break;
                 case TRIANG_STR:
+                    labelChange1.Text = "N"; textBoxChange1.Text = "0";
+                    labelChange2.Text = "a"; textBoxChange2.Text = "0";
+                    labelChange3.Text = "b"; textBoxChange3.Text = "0";
                     break;
                 case SIMPSON_STR:
+                    labelChange1.Text = "N"; textBoxChange1.Text = "0";
+                    labelChange2.Text = "a"; textBoxChange2.Text = "0";
+                    labelChange3.Text = "b"; textBoxChange3.Text = "0";
                     break;
             }
         }
@@ -118,18 +127,25 @@ namespace Lab2_SAiMMod
                     numbersX.Sort();
                     break;
                 case GAMMA_STR:
+                    numbersX = GammaDistribution(Convert.ToInt32(textBoxChange1.Text), Convert.ToDouble(textBoxChange2.Text), Convert.ToDouble(textBoxChange3.Text));
+                    numbersX.Sort();
                     break;
                 case TRIANG_STR:
+                    numbersX = TriangularDistribution(Convert.ToInt32(textBoxChange1.Text), Convert.ToDouble(textBoxChange2.Text), Convert.ToDouble(textBoxChange3.Text));
+                    numbersX.Sort();
                     break;
                 case SIMPSON_STR:
+                    numbersX = SimpsonDistribution(Convert.ToInt32(textBoxChange1.Text), Convert.ToDouble(textBoxChange2.Text), Convert.ToDouble(textBoxChange3.Text));
+                    numbersX.Sort();
                     break;
             }
-            List<GistogramInfo> gistData = new List<GistogramInfo>();
-            gistData = GetGistogramInfo(numbersX);
-            gistData.ForEach(delegate (GistogramInfo info)
-            {
-                chart1.Series[0].Points.AddXY(Math.Round(info.startOfSegment, 4), info.numOfValue);
-            });
+            double expValue = Math.Round(GetExpectedValue(numbersX), 4);
+            double disp = Math.Round(GetDispersion(numbersX, expValue), 4);
+            double deviation = Math.Round(GetStandartDeviation(disp), 4);
+            textBoxExpValue.Text = expValue.ToString();
+            textBoxDisp.Text = disp.ToString();
+            textBoxDeviation.Text = deviation.ToString();
+
         }
         private void GetLemer(int a, int R0, int m)
         {
@@ -141,6 +157,23 @@ namespace Lab2_SAiMMod
                 numbersR.Add(temp2);
                 R = temp1;
             }
+        }
+
+        private double GetExpectedValue(List<double> numbers)
+        {
+            double sum = numbers.Sum();
+            return sum / SIZE;
+        }
+
+        private double GetDispersion(List<double> numbers, double expValue)
+        {
+            double sum = numbers.Sum(x => Math.Pow(x - expValue, 2));
+            return sum / SIZE;
+        }
+
+        private double GetStandartDeviation(double disp)
+        {
+            return Math.Sqrt(disp);
         }
 
         private static List<double> EvenDistribution(int N, double a, double b)
@@ -189,29 +222,96 @@ namespace Lab2_SAiMMod
             return result;
         }
 
-        private List<GistogramInfo> GetGistogramInfo(List<double> numbers)
+        private static List<double> GammaDistribution(int N, double n, double l)
         {
-            double maxValue = numbers.Max();
-            double minValue = numbers.Min();
-            double step = (double)(maxValue - minValue) / (double)NUM_STEPS;
-            List<GistogramInfo> result = new List<GistogramInfo>();
-            double temp = minValue;
-            int num = numbers.FindAll(x => (x == minValue)).Count;
-            while (temp < maxValue)
+            if (N == 0) N = 130000;
+            if (n == 0) n = 100;
+            if (l == 0) l = 400;
+
+            var result = new List<double>();
+
+            for (int i = 0; i < N; i++)
             {
-                num += numbers.FindAll(x => (x <= temp + step && x > temp)).Count;
-                GistogramInfo info = new GistogramInfo
-                {
-                    numOfValue = num,
-                    startOfSegment = temp,
-                    endOfSegment = temp + step
-                };
-                result.Add(info);
-                num = 0;
-                temp += step;
-                temp = Math.Round(temp, 5);
+                double tmp = 1;
+                for (int j = 0; j < n; j++)
+                    tmp *= numbersR.ElementAt((i + j) % N);
+
+                result.Insert(i, -Math.Log(tmp) / l);
             }
+
             return result;
         }
+
+        private static List<double> TriangularDistribution(int N, double a, double b)
+        {
+            if (N == 0) N = 130000;
+            if (a == 0) a = 1;
+            if (b == 0) b = 50;
+
+            var result = new List<double>();
+
+            for (int i = 0; i < N-1; i++)
+            {
+                double R1 = numbersR.ElementAt(i);
+                double R2 = numbersR.ElementAt(i + 1);
+                result.Insert(i, a + (b - a) * Math.Max(R1, R2));
+            }
+
+            return result;
+        }
+
+        private static List<double> SimpsonDistribution(int N, double a, double b)
+        {
+            if (N == 0) N = 130000;
+            if (a == 0) a = 20;
+            if (b == 0) b = 100;
+
+            var result = new List<double>();
+
+            for (int i = 0; i < N; i++)
+                result.Insert(i, a / 2 + (b / 2 - a / 2) * numbersR.ElementAt(i) + a / 2 + (b / 2 - a / 2) * numbersR.ElementAt((i + 1) % N));
+
+            return result;
+        }
+
+
+        /*        private void DrawEvaluationDiagram(List<double> xValues, double? minX = null, double? maxX = null, double? maxY = null)
+                {
+                    xValues.Sort();
+
+                    chart1.Series["Ci"].Points.Clear();
+                    chart1.Series["Xi"].Points.Clear();
+
+                    int[] countInIntervals = new int[NUM_STEPS + 1];
+                    int intervalNumber;
+                    int max = 0;
+
+                    double delta = (xValues.Last() - xValues.First()) / NUM_STEPS;
+
+                    foreach (double x in xValues)
+                    {
+                        intervalNumber = (int)Math.Truncate((x - xValues.First()) / delta) % 20;
+                        countInIntervals[intervalNumber]++;
+                    }
+
+                    foreach (int i in countInIntervals)
+                    {
+                        if (i > max)
+                        {
+                            max = i;
+                        }
+                    }
+
+                    chart1.ChartAreas[0].AxisY.Maximum = (maxY != null) ? maxY.Value : (1.5 * ((double)max / xValues.Count));
+                    chart1.ChartAreas[0].AxisY.Minimum = yMin;
+                    chart1.ChartAreas[0].AxisX.Maximum = (maxX != null) ? maxX.Value : xValues.Last();
+                    chart1.ChartAreas[0].AxisX.Minimum = (minX != null) ? minX.Value : xValues.First();
+
+                    for (int i = 0; i < countInIntervals.Length; i++)
+                    {
+                        chart1.Series["Ci"].Points.AddXY(xValues.First() + i * delta + delta / 2, (double)countInIntervals[i] / xValues.Count);
+                        Console.WriteLine((double)countInIntervals[i] / xValues.Count);
+                    }
+                }*/
     }
 }
