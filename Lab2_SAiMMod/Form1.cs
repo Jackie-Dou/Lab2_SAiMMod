@@ -13,6 +13,7 @@ namespace Lab2_SAiMMod
     public partial class Form1 : Form
     {
         private const int NUM_STEPS = 20;
+        private static int N_GLOBAL;
         private const int SIZE = 200000;
         private const string EVEN_STR = "Равномерное распределение";
         private const string GAUSS_STR = "Гауссовское распределение";
@@ -71,8 +72,8 @@ namespace Lab2_SAiMMod
                     break;
                 case GAMMA_STR:
                     labelChange1.Text = "N = "; textBoxChange1.Text = "0";
-                    labelChange2.Text = "η = "; textBoxChange1.Text = "0";
-                    labelChange3.Text = "λ = "; textBoxChange1.Text = "0";
+                    labelChange2.Text = "η = "; textBoxChange2.Text = "0";
+                    labelChange3.Text = "λ = "; textBoxChange3.Text = "0";
                     break;
                 case TRIANG_STR:
                     labelChange1.Text = "N"; textBoxChange1.Text = "0";
@@ -173,13 +174,13 @@ namespace Lab2_SAiMMod
         private double GetExpectedValue(List<double> numbers)
         {
             double sum = numbers.Sum();
-            return sum / SIZE;
+            return sum / N_GLOBAL;
         }
 
         private double GetDispersion(List<double> numbers, double expValue)
         {
             double sum = numbers.Sum(x => Math.Pow(x - expValue, 2));
-            return sum / SIZE;
+            return sum / N_GLOBAL;
         }
 
         private double GetStandartDeviation(double disp)
@@ -192,6 +193,8 @@ namespace Lab2_SAiMMod
             if (N == 0) N = 130000;
             if (a == 0) a = 5000;
             if (b == 0) b = 10000;
+
+            N_GLOBAL = N;
 
             var result = new List<double>();
 
@@ -209,14 +212,16 @@ namespace Lab2_SAiMMod
 
             var result = new List<double>();
 
-            double n = 6;
+            N_GLOBAL = N;
+
+            double n = 12;
             for (int i = 0; i < N; i++)
             {
                 double sum = 0;
                 for (int j = 0; j < n; j++)
                     sum += numbersR.ElementAt((i + j) % N);
 
-                result.Insert(i, m + sig * Math.Sqrt(12.0 / n) * (sum - (double)n / 2));
+                result.Insert(i, m + sig * Math.Sqrt(12.0 / n) * (sum - (double)n / 2.0));
             }
 
             return result;
@@ -226,6 +231,8 @@ namespace Lab2_SAiMMod
         {
             if (N == 0) N = 130000;
             if (l == 0) l = 100;
+
+            N_GLOBAL = N;
 
             var result = new List<double>();
             for (int i = 0; i < N; i++)
@@ -238,6 +245,8 @@ namespace Lab2_SAiMMod
             if (N == 0) N = 130000;
             if (n == 0) n = 100;
             if (l == 0) l = 400;
+
+            N_GLOBAL = N;
 
             var result = new List<double>();
 
@@ -259,6 +268,8 @@ namespace Lab2_SAiMMod
             if (a == 0) a = 1;
             if (b == 0) b = 50;
 
+            N_GLOBAL = N;
+
             var result = new List<double>();
 
             for (int i = 0; i < N-1; i++)
@@ -276,6 +287,8 @@ namespace Lab2_SAiMMod
             if (N == 0) N = 130000;
             if (a == 0) a = 20;
             if (b == 0) b = 100;
+
+            N_GLOBAL = N;
 
             var result = new List<double>();
 
